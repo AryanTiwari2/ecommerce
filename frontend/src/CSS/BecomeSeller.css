@@ -92,6 +92,7 @@ h3{
     position: absolute;
     margin-left: 500px;
     padding: 2px;
+    cursor: pointer;
 }
  
  .mine{

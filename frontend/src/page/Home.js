@@ -26,7 +26,9 @@ const Home = () => {
   };
 
 
- 
+ const handleOrderNow = ()=>{
+  console.log("hi");
+ }
 
 
   
@@ -55,7 +57,7 @@ const Home = () => {
             and scrambled it to make a type specimen book. It has survived not
             only five centuries
           </p>
-          <button className="font-bold bg-red-500 text-slate-200 px-4 py-2 rounded-md">
+          <button className="font-bold bg-red-500 text-slate-200 px-4 py-2 rounded-md" onClick={handleOrderNow}>
             Order Now
           </button>
         </div>

@@ -9,6 +9,8 @@ import { toast } from "react-hot-toast";
 import decode from 'jwt-decode';
 import { useEffect } from "react";
 import { sellerRedux } from "../redux/userSlice";
+import { initialiseCartItem } from "../redux/productSlice";
+import { deleteAllcartItem } from "../redux/productSlice";
 
 
 
@@ -19,20 +21,35 @@ const Header = () => {
   const dispatch = useDispatch();
   const sellerData = useSelector((state)=>state.user.sellerdetail);
 const checkToken=async ()=>{
-
+  // localStorage.removeItem('token');
   const token = localStorage.getItem('token');
   if (!token)
   {
     dispatch(logoutRedux());
+    navigate("/login");
     return true;
   }
   const decodedToken = decode(token);
-  dispatch(loginRedux(decodedToken));
-
-
+  const email = decodedToken.email;
+  // console.log(useremail);
+  const fetchuser = await fetch(`http://localhost:8000/getUser/${email}`,{
+      method:"GET",
+      headers:{
+        "content-type":"application/json",
+      }
+    }); 
+  const res = await fetchuser.json();
+  if(res.mes==="yes")
+  {
+    dispatch(loginRedux(res.data));
+    dispatch(initialiseCartItem(res.data.cart));
+  }
+  else{
+    toast("failed fetching user deatail");
+  }
   if(userData.type==="seller")
   {
-    const email = userData.email;
+    // const email = userData.email;
     const fetchData = await fetch(`http://localhost:8000/getSellerData/${email}`,{
       method:"GET",
       headers:{
@@ -62,6 +79,7 @@ useEffect(() => {
     setShowMenu((preve) => !preve);
   };
   const handleLogout = () => {
+    dispatch(deleteAllcartItem());
     dispatch(logoutRedux());
     localStorage.removeItem('token');
     toast("Logout successfully");

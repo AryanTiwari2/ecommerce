@@ -31,7 +31,19 @@ const userSchema = mongoose.Schema({
     password:String,
     confirmPassword:String,
     image : String,
-    type:String
+    type:String,
+    cart:[
+        {
+            sellerEmail:String,
+            name : String,
+            category :String,
+            image : String,
+            price : String,
+            description : String ,
+            qty:String,
+            total:String,
+        }
+    ]
 });
 const UserModel = mongoose.model("userTable",userSchema);
 
@@ -40,7 +52,7 @@ const UserModel = mongoose.model("userTable",userSchema);
 
 
 app.get("/",(req,res)=>{
-    res.send("server is running")
+    res.send("server is running");
 })
 app.post("/signup",async (req,res)=>{
     const data = req.body;
@@ -56,7 +68,26 @@ app.post("/signup",async (req,res)=>{
         res.send({mes:"NotExists"}).status(201);
     }
 })
+app.get("/getUser/:email",async(req,res)=>{
+    const {email} = req.params;
+    // console.log(email);
+    const check = await UserModel.findOne({ email: email });
+    if (check) {
+        const datasend = {
+            firstName: check.firstName,
+            lastName: check.lastName,
+            email: check.email,
+            image: check.image,
+            type: check.type,
+            cart:check.cart
+        };
+        res.send({mes:"yes",data:datasend});
+    }
+    else{
+        res.send({mes:"no"});
+    }
 
+});
 app.post("/login", async (req, res) => {
     const data = req.body;
     const { email } = data;
@@ -69,7 +100,13 @@ app.post("/login", async (req, res) => {
             email: check.email,
             image: check.image,
             type: check.type,
+            cart:check.cart
         };
+        const datatoken = {
+            firtName:check.firstName,
+            email:check.email,
+        };
+        
         // console.log(datasend);
 
         // Secret key for signing the token, replace 'your-secret-key' with a strong secret key
@@ -79,7 +116,8 @@ app.post("/login", async (req, res) => {
         const expirationTime = 10;
 
         // Create the JWT token
-        const token = jwt.sign(datasend, secretKey, { expiresIn: expirationTime })
+        // const useremail = datasend.email;
+        const token = jwt.sign(datatoken, secretKey, { expiresIn: expirationTime });
         // Send the token in the response
         res.send({ mes: "LoggedIn", data: datasend ,token: token});
     } else {
@@ -121,6 +159,10 @@ const sellerSchema = mongoose.Schema({
     ],
     Uploads:[
         {
+            id:{
+                type:String,
+                unique:true,
+            },
             name:String,
             image:String,
             category:String,
@@ -213,6 +255,21 @@ app.get("/product",async(req,res)=>{
     const data = await ProductModel.find({});
     res.send(JSON.stringify(data));
 })
+
+
+/// cart
+app.post("/addtocart",async(req,res)=>{
+    const {email,productCartItem} = req.body;
+    // console.log(productCartItem);
+    const check = await UserModel.findOneAndUpdate({email:email},{$set:{cart:productCartItem}});
+    if(check)
+    {
+        res.send({mes:"saved"});
+    }
+    else{
+        res.send({mes:"notsaved"});
+    }
+});
 
 app.listen(PORT,(req,res)=>{
     console.log("hi");

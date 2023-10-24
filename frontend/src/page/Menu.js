@@ -21,7 +21,8 @@ const handleAddCartProduct = ()=>{
   dispatch(addCartItem(productDisplay));
 }
   return (
-    <div className="p-2 md:p-4">
+    <>
+    {productDisplay ? <div className="p-2 md:p-4">
     <div className="w-full max-w-4xl m-auto md:flex bg-white">
       <div className="max-w-sm  overflow-hidden w-full p-5">
         <img
@@ -52,6 +53,10 @@ const handleAddCartProduct = ()=>{
 
     <AllProduct heading={"Related Product"}/>
   </div>
+  :
+  <div style={{fontSize:"45px", fontFamily:"cursive"}}>Loading....</div>
+  }
+  </>
   )
 };
 

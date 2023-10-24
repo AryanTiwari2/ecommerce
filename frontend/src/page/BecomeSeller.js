@@ -5,6 +5,8 @@ import { toast } from 'react-hot-toast';
 import { useSelector ,useDispatch} from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { loginRedux } from '../redux/userSlice';
+import { deleteAllcartItem } from '../redux/productSlice';
+import { logoutRedux } from '../redux/userSlice';
 
 
 
@@ -14,14 +16,7 @@ import { loginRedux } from '../redux/userSlice';
 const BecomeSeller = () => {
   const userData = useSelector((state)=>state.user.userdetail);
   const [curr,setCurr]=useState('first');
-  // const [GST,setGST] = useState('');
-  // const [address,setAddress] = useState('');
-  // const [bank,setBank] = useState('');
-  // const [PanImage,setPanImage] = useState('');
-  // const [PanNumber,setPanNumber] = useState('');
-  // const [store,setStore] = useState('');
-  // const [PIN,setPin] = useState('');
-  // const [Ifsc,setIfsc] = useState('');
+  const [subtext,setSubtext] = useState('Submit')
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [data, setData] = useState({
@@ -98,8 +93,8 @@ const handleSubmit = async(e)=>
     e.preventDefault();
     // const {firstName,lastName,email,type,image}=userData;
     // const data  = {GST,address,PIN,PanImage,PanNumber,bank,store,Ifsc,firstName,lastName,email,type,image};
-    console.log(data);
     // return;
+    setSubtext("wait")
     try {
       const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMIN}becomeseller`, {
           method: "POST",
@@ -109,12 +104,18 @@ const handleSubmit = async(e)=>
           body:JSON.stringify(data)
       });
       const response = await fetchData.json();
+
+      setSubtext("submit")
       if (response.mes === "SellerExist") {
           toast("Seller already exists");
       } else {
           toast("Successfully became a seller");
           alert("Please login again");
           navigate("/login");
+          dispatch(deleteAllcartItem());
+          dispatch(logoutRedux());
+          localStorage.removeItem('token');
+          toast("Logout successfully");
           // Handle success, e.g., navigate to a different page or dispatch an action
       }
   } catch (error) {
@@ -231,7 +232,7 @@ const handleSubmit = async(e)=>
             placeholder='Bank IFSC'
           />
           <button onClick={handlePrev} className='prevbutton3'>Prev</button>
-          <input type='submit' value='submit' onClick={handleSubmit} className='submitbutton'/>
+          <input type='submit' value={`${subtext}`} onClick={handleSubmit} className='submitbutton'/>
           </>)}
       </form>
     </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import { useSelector } from "react-redux";
 import CartProduct from "../component/cartProduct";
 import emptyCartImage from "../assest/empty.gif"
@@ -8,8 +8,9 @@ import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const productCartItem = useSelector((state) => state.product.cartItem);
-  const user = useSelector(state => state.user)
+  const user = useSelector(state => state.user.userdetail)
   const navigate = useNavigate()
+  const [save,setSave] = useState("save");
 
   const totalPrice = productCartItem.reduce(
     (acc, curr) => acc + parseInt(curr.total),
@@ -20,8 +21,26 @@ const Cart = () => {
     0
   );
 
-  
-  
+  const setCartAtBackend=async()=>{
+    const {email} = user;
+    setSave("saving....")
+    const fetchData = await fetch("http://localhost:8000/addtocart",{
+        method:"POST",
+        headers:{
+          "content-type":"application/json"
+        },
+        body:JSON.stringify({email,productCartItem})
+      });
+      const response = await fetchData.json();
+      if(response.mes==="saved")
+      {
+        toast("Your Cart Saved");
+        setSave("save")
+      }
+      else{
+        toast("Product Could not be saved");
+      }
+  }
   const handlePayment = async()=>{
 
       if(user.email){
@@ -70,14 +89,14 @@ const Cart = () => {
                   name={el.name}
                   image={el.image}
                   category={el.category}
-                  qty={el.qty}
+                  qty={el.qty} 
                   total={el.total}
                   price={el.price}
                 />
               );
             })}
+            <button onClick={setCartAtBackend} style={{paddingLeft:"20px",paddingRight:"20px",backgroundColor:"red",fontSize:"20px",color:"white",marginLeft:"350px",marginTop:"50px",borderRadius:"5px",boxShadow:"1px 2px 4px black"}}>{save}</button>
           </div>
-
           {/* total cart item  */}
           <div className="w-full max-w-md  ml-auto">
             <h2 className="bg-blue-500 text-white p-2 text-lg">Summary</h2>
@@ -100,13 +119,12 @@ const Cart = () => {
         : 
         <>
           <div className="flex w-full justify-center items-center flex-col">
-            <img src={emptyCartImage} className="w-full max-w-sm"/>
+            <img src={emptyCartImage} style={{height:"500px"}}/>
             <p className="text-slate-500 text-3xl font-bold">Empty Cart</p>
           </div>
         </>
       }
       </div>
-    
     </>
   );
 };

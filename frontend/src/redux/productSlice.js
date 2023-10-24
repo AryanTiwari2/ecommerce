@@ -11,6 +11,9 @@ export const productSlice = createSlice({
         setProductData:(state,action)=>{
             state.productList=[...action.payload]
         },
+        initialiseCartItem:(state,action)=>{
+            state.cartItem=action.payload;
+        },
         addCartItem:(state,action)=>{
             const check = state.cartItem.some((e)=>e._id===action.payload._id);
             if(check)
@@ -46,8 +49,11 @@ export const productSlice = createSlice({
                 state.cartItem[index].qty=--qty;
                 state.cartItem[index].total = parseInt(total) - parseInt(price);
             }
+        },
+        deleteAllcartItem:(state,action)=>{
+            state.cartItem=[];
         }
     }
 })
-export const {setProductData,addCartItem,deleteCartItem,increaseQty,decreaseQty} = productSlice.actions;
+export const {setProductData,addCartItem,deleteCartItem,increaseQty,decreaseQty,initialiseCartItem,deleteAllcartItem} = productSlice.actions;
 export default productSlice.reducer;

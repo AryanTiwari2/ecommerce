@@ -7,6 +7,7 @@ import { BsEmojiSmileUpsideDown } from "react-icons/bs";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { loginRedux } from "../redux/userSlice";
+import { initialiseCartItem } from "../redux/productSlice";
 
 function Login() {
   const navigate = useNavigate();
@@ -49,9 +50,9 @@ function Login() {
         const token = response.token;
         localStorage.setItem('token', token);
         dispatch(loginRedux(response.data));
-        // console.log(response.data);
+        dispatch(initialiseCartItem(response.data.cart));
         setTimeout(()=>{
-          navigate("/");
+          navigate("/"); 
       },1000);
       }
       else{
