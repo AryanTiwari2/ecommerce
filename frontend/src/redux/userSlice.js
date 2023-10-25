@@ -1,11 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  // email: "",
-  // firstName: "",
-  // image: "",
-  // lastName: "",
-  // _id: "",
+  orderList:[],
   type:"",
   userdetail:{},
   sellerdetail:{},
@@ -24,6 +20,7 @@ export const userSlice = createSlice({
     },
     sellerRedux:(state,action)=>{
       state.sellerdetail=action.payload;
+      state.orderList = action.payload.Orders;
     }
   },
 });

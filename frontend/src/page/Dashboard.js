@@ -6,8 +6,7 @@ import { useSelector } from 'react-redux';
 import Newproduct from './Newproduct';
 
 const Dashboard = () => {
-
-   const productData = useSelector((state)=>state.product.productList);
+   const orderData = useSelector((state)=>state.user.orderList);
    const [status, setStatus] = useState("Dashboard");
    const changeStatus = (s) => {
       setStatus(s);
@@ -136,13 +135,15 @@ const Dashboard = () => {
                   <div>Category</div>
                   <div>Status</div>
                </div>
-                {productData.map((e)=>{
+                {orderData.map((e)=>{
                   return (
                     <OrderList
                       image = {e.image}  
                       name = {e.name} 
-                      category={e.category}
-                      price={e.price}               
+                      amount={e.amount} 
+                      date={e.date}
+                      UserEmail={e.UserEmail}
+                      paymentStatus ={e.paymentStatus}             
                       />
                   )
                 })}

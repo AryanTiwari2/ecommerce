@@ -1,22 +1,19 @@
 import React from 'react'
 import "../CSS/OrderList.css"
-const OrderList = ({image,name,price,category}) => {
+const OrderList = ({name,image,amount,date,UserEmail,paymentStatus}) => {
   return (
+    <>
     <div className='flex'>
-      <div className="product">
-        <img src={image} alt="iamge" />
-        <p>{name}</p>
-      </div>
-      <div className="price">
-        {price}
-      </div>
-      <div className='category'>
-        {category}
-      </div>
-      <div className='status'>
-        pending
+      <div className='flex'>
+      <img src={image} alt="image" />
+      <p>{name}</p>
+      <p>{date}</p>
+      <p>{UserEmail}</p>
+      <p>{amount}</p>
+      <p>{paymentStatus}</p>
       </div>
     </div>
+    </>
   )
 }
 

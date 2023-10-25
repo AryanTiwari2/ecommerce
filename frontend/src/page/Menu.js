@@ -20,6 +20,31 @@ const handleAddCartProduct = ()=>{
     }
   dispatch(addCartItem(productDisplay));
 }
+const handleBuy = async()=>{
+  if(!userData.email)
+  {
+    toast("Login to add items");
+    return;
+  }
+  var today = new Date();
+  const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+  const data = {sellerEmail:productDisplay.sellerEmail,_id:productDisplay._id,name:productDisplay.name,image:productDisplay.image,amount:productDisplay.price,date,UserEmail:userData.email,paymentStatus:"Pending"}
+  const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMIN}setOrder`,{
+    method:"POST",
+    headers:{
+      "content-type":"application/json"
+    },
+    body:JSON.stringify(data)
+  })
+  const response = await fetchData.json();
+  if(response.mes==="yes")
+  {
+    toast("successfully ordered");
+  }
+  else{
+    toast("failed your order");
+  }
+}
   return (
     <>
     {productDisplay ? <div className="p-2 md:p-4">
@@ -40,7 +65,7 @@ const handleAddCartProduct = ()=>{
           <span>{productDisplay.price}</span>
         </p>
         <div className="flex gap-3">
-        <button className="bg-yellow-500 py-1 mt-2 rounded hover:bg-yellow-600 min-w-[100px]">Buy</button>
+        <button className="bg-yellow-500 py-1 mt-2 rounded hover:bg-yellow-600 min-w-[100px]" onClick={handleBuy}>Buy</button>
         <button className="bg-yellow-500 py-1 mt-2 rounded hover:bg-yellow-600 min-w-[100px]"
         onClick={handleAddCartProduct}>Add Cart</button>
         </div>

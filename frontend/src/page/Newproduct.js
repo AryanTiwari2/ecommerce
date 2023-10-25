@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux'
 
 const Newproduct = () => {
   const userData = useSelector((state)=>state.user.userdetail);
+  const [save,setSave] = useState('save');
   const [data,setData] = useState({
     sellerEmail:userData.email,
     name : "",
@@ -41,11 +42,10 @@ const Newproduct = () => {
 
   const handleSubmit = async(e)=>{
     e.preventDefault()
-    console.log(data)
-
     const {name,image,category,price} = data
 
     if(name && image && category && price){
+      setSave('uploading')
       const fetchData = await fetch(`${process.env.REACT_APP_SERVER_DOMIN}uploadProduct`,{
         method:"POST",
         headers:{
@@ -61,6 +61,7 @@ const Newproduct = () => {
       else{
         toast("Could not add product");
       }
+      setSave('save')
       setData(()=>{
         return{
           name : "",
@@ -116,7 +117,7 @@ const Newproduct = () => {
         <label htmlFor='description'>Description</label>
         <textarea rows={2} value={data.description} className='bg-slate-200 p-1 my-1 resize-none' name='description' onChange={handleOnChange}></textarea>
 
-        <button className='bg-red-500 hover:bg-red-600 text-white text-lg font-medium my-2 drop-shadow'>Save</button>
+        <button className='bg-red-500 hover:bg-red-600 text-white text-lg font-medium my-2 drop-shadow'>{save}</button>
        </form>
     </div>
   )

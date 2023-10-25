@@ -151,18 +151,16 @@ const sellerSchema = mongoose.Schema({
     PanNumber:String,
     Orders :[
         {
+         name:String,
+         image:String,
+         amount:String,
          date:String,
-         Status:String,
          UserEmail:String,
          paymentStatus:String
         }
     ],
     Uploads:[
         {
-            id:{
-                type:String,
-                unique:true,
-            },
             name:String,
             image:String,
             category:String,
@@ -187,7 +185,20 @@ app.get("/getSellerData/:email",async (req,res)=>{
     }
 })
 
-
+app.post("/setOrder",async(req,res)=>{
+    const data = req.body;
+    const email = data.sellerEmail;
+    const {_id,name,image,amount,date,UserEmail,paymentStatus}=data;
+    const dataSend = {_id,name,image,amount,date,UserEmail,paymentStatus};
+    const check = sellerModel.findOneAndUpdate({email:email},{$push:{Orders:dataSend}});
+    if(check)
+    {
+        res.send({mes:"yes"});
+    }
+    else{
+        res.send("no");
+    }
+})
 app.post("/becomeseller", async (req, res) => {
     try {
         const data = req.body;
@@ -231,10 +242,11 @@ const ProductModel = mongoose.model("product",productSchema);
 app.post("/uploadProduct",async (req,res)=>{
     const data = req.body;
     const check = await ProductModel.insertMany([data]);
+    // console.log(check)
     if(check)
     {
-        const {sellerEmail,name,description,price,category,image} = data;
-        const newData = {name,description,price,category,image};
+        const {_id,sellerEmail,name,description,price,category,image} = check[0];
+        const newData = {_id,name,description,price,category,image};
         const seller = await sellerModel.findOneAndUpdate({email:sellerEmail},
             { $push: { Uploads: newData }});
         if(seller)
