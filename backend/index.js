@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 8000;
 
 
 
-// console.log(process.env.MONGO_CONNECTION);
+console.log(process.env.MONGO_CONNECTION);
 mongoose.connect(process.env.MONGO_CONNECTION)
 .then(()=>{
     console.log('mongoDB connected')
@@ -149,25 +149,6 @@ const sellerSchema = mongoose.Schema({
     Ifsc:String,
     PanImage:String,
     PanNumber:String,
-    Orders :[
-        {
-         name:String,
-         image:String,
-         amount:String,
-         date:String,
-         UserEmail:String,
-         paymentStatus:String
-        }
-    ],
-    Uploads:[
-        {
-            name:String,
-            image:String,
-            category:String,
-            decription:String,
-            price:String
-        }
-    ]
 })
 const sellerModel = mongoose.model('seller',sellerSchema);
 
