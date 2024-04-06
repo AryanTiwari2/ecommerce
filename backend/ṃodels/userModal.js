@@ -1,26 +1,34 @@
-const userSchema = mongoose.Schema({
-    firstName:String,
-    lastName:String,
-    email:{
-        type:String,
-        unique:true
+const mongoose = require('mongoose');
+const validator = require('validator');
+
+const userSchema = new Schema({
+    userId: {
+        type: Number,
+        unique: true,
+        required: true
     },
-    password:String,
-    confirmPassword:String,
-    image : String,
-    type:String,
-    cart:[
-        {
-            sellerEmail:String,
-            name : String,
-            category :String,
-            image : String,
-            price : String,
-            description : String ,
-            qty:String,
-            total:String,
-        }
-    ]
+    firstName: String,
+    lastName: String,
+    email: {
+        type: String,
+        unique: true,
+        required:true,
+        validate: validator.default.isEmail,  //nothing but validating email
+      },
+    password: String,
+    image: String,
+    userType: {
+        tpye:String,
+        enum:['user','admin','seller'],
+        default:'user'
+    },
+    cart: [{
+        productId:String,
+        quantity:Number
+    }],
+    isActive:Number
 });
 
-const UserModel = mongoose.model("userTable",userSchema);
+const userModel = mongoose.model("userTable",userSchema);
+
+module.exports={userModel};

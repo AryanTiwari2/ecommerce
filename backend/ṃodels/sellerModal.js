@@ -1,24 +1,24 @@
+const mongoose = require('mongoose');
 
 const sellerSchema = mongoose.Schema({
-    firstName:String,
-    lastName:String,
-    email:{
-        type:String,
-        unique:true
+    sellerId: {
+        type: Number,
+        unique: true,
+        required: true
     },
-    password:String,
-    image : String,
-    type:String,
+    sellerEmail: {
+        type: String,
+        unique: true
+    },
+    userId:Number,
     GST:String,
-    address:String,
-    PIN:{
-        type:String,
-        require:true
-    },
-    store:String,
+    addressId:Number,
     bank:String,
     Ifsc:String,
     PanImage:String,
     PanNumber:String,
-})
+    isActive:Number,
+});
 const sellerModel = mongoose.model('seller',sellerSchema);
+
+module.exports={sellerModel};

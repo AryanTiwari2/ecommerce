@@ -1,20 +1,22 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const dotenv = require('dotenv').config();
 const jwt = require('jsonwebtoken');
+const {config} = require("./config/config");
+
+
 const app = express();
 app.use(express.json({limit:"10mb"}));
 app.use(express.urlencoded({extended:true}))
 app.use(cors());
 
-const PORT = process.env.PORT || 8000;
+const PORT =  8000;
 
 
 
 
-console.log(process.env.MONGO_CONNECTION);
-mongoose.connect(process.env.MONGO_CONNECTION)
+// console.log(config.MONGO_CONNECTION);
+mongoose.connect(config.MONGO_CONNECTION)
 .then(()=>{
     console.log('mongoDB connected')
 })
