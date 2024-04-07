@@ -1,7 +1,7 @@
 const { loginUser } = require("./../service/userService");
 const { config } = require("./../config/config");
-const { userModal } = require  ("./../models/userModal.js");
 
+const {userModal} = require("./../ṃodels/userModal");
 
 
 const userLogin = async (req, res) => {
@@ -34,25 +34,28 @@ const userLogin = async (req, res) => {
 };
 
 const signUp = async (req, res) => {
-  const {email} = req.body;
-
-  const user = await UserModel.findOne({email:email});
+  const {firstName,lastName,image,password,email,_id,userId} = req.body;
+  let user = await userModal.findOne({email:email});
 
   if (user) 
     return res.status(200).json({
       success: true,
-      message: `Welcome, ${user.firstName+" "+user.lastNmae}`,
+      message: `Welcome, ${user.firstName+" "+user.lastName}`,
     });
 
-  if (!firstName || !lastName || !email || !image || !password)
-    return next(new ErrorHandler("Please add all fields", 400));
+  if (!firstName || !lastName || !email || !image || !password){
+    return res.status(400).json({
+        success: false,
+        message: "Enter all fields",
+      });
+  }
 
   user = await userModal.create({
     firstName,
     lastName,
     email,
     password,
-    userId:_id,
+    userId,
     image,
     userType:"user",
     cart:[]
@@ -62,6 +65,10 @@ const signUp = async (req, res) => {
     success: true,
     message: `Welcome, ${user.firstName}`,
   });
+};
+const generateUserId = () => {
+    // Generate a random unique number for userId
+    return Math.floor(Math.random() * 1000000); // You can adjust the range as needed
 };
 module.exports = {
   userLogin,signUp
