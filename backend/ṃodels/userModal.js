@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
     password: String,
     image: String,
     userType: {
-        tpye:String,
+        type:String,
         enum:['user','admin','seller'],
         default:'user'
     },
