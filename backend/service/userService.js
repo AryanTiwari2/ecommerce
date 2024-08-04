@@ -80,7 +80,33 @@ const hashingPassword = async (password) => {
         throw error;
     }
 }
+
+const userData = async (userId) => {
+    try {
+        if (!userId) {
+            return null;
+        }
+        const info = await userModal.findOne({ userId: userId });
+        if (!info) {
+            return null;
+        }
+        const data = {
+            userId: info?.userId,
+            firstName: info?.firstName,
+            lastName: info?.lastName,
+            email: info?.email,
+            userType: info?.userType,
+            cart: info?.cart,
+            isActive: info?.isActive
+        }
+        return data;
+    } catch (error) {
+        console.log("Error in userData", error);
+        return null;
+    }
+}
 module.exports = {
     loginUser,
-    signUpUser
+    signUpUser,
+    userData
 };
